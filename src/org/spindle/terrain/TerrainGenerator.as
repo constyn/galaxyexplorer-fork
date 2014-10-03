@@ -38,6 +38,7 @@ public class TerrainGenerator {
                 if (map[j][i] < 10) {
                     str = getSurroundings(map, j, i).substr(0, 3);
                     tile = Mappings.WaterMappings[str];
+					//tile = Tileculator.getTile(str)
                     if (tile) {
                         tiles.setTile(i, j, tile, tileHeight);
                     } else {
@@ -50,7 +51,7 @@ public class TerrainGenerator {
                     tiles.setTile(i, j, 35);
                 } else {
                     tileHeight = (map[j][i] / 10);
-                    tile = Mappings.LandMappings[str];
+                    tile = Tileculator.getTile(str)
                     if (tile) {
                         tiles.setTile(i, j, tile, tileHeight);
                     } else trace('Unknown ' + str);
