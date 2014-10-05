@@ -6,6 +6,8 @@ import net.flashpunk.World;
 import net.flashpunk.utils.Input;
 import net.flashpunk.utils.Key;
 
+import org.spindle.entities.Player;
+
 import org.spindle.terrain.TerrainGenerator;
 
 [SWF(width='1024', height='768', backgroundColor='#000000', frameRate='30')]
@@ -34,6 +36,7 @@ public class GalaxyExplorer extends Engine {
     private function createLevel(worldWidth:uint, worldHeight:uint, isleSize:uint):void {
         var world:World = new World();
         world.add(terrainGenerator.createLevel(worldWidth, worldHeight, isleSize, compactness));
+        world.add(new Player());
         FP.world = world;
     }
 

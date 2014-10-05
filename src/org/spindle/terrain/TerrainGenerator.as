@@ -6,6 +6,8 @@ import net.flashpunk.Entity;
 import net.flashpunk.FP;
 import net.flashpunk.graphics.Tilemap;
 
+import org.spindle.constants.Assets;
+
 public class TerrainGenerator {
 
     private static function getSurroundings(map:Array, j:uint, i:uint, limit:uint = 10):String {
@@ -40,9 +42,9 @@ public class TerrainGenerator {
                     tile = Mappings.WaterMappings[str];
                     //tile = Tileculator.getTile(str)
                     if (tile) {
-                        tiles.setTile(i, j, tile, tileHeight);
+                        tiles.setTile(i, j, tile);
                     } else {
-                        tiles.setTile(i, j, 64, tileHeight);
+                        tiles.setTile(i, j, 64);
                     }
                 } else if (map[j][i] === 100) {
                     str = getSurroundings(map, j, i, 100);
@@ -75,6 +77,7 @@ public class TerrainGenerator {
             }
         }
         tileEntity.addGraphic(tiles);
+        tileEntity.layer = 5;
         return tileEntity;
     }
 
@@ -156,7 +159,7 @@ public class TerrainGenerator {
         /***************************************/
 
         function addWall(px:uint, py:uint) {
-            if (px < worldWidth - 1 && py < worldHeight - 1 && map[py][px] > 10 && map[py][px] < 40 && FP.random < 0.6) {
+            if (px < worldWidth - 1 && py < worldHeight - 1 && map[py][px] > 10 && map[py][px] < 40 && FP.random < 0.7) {
                 map[py][px] = 100;
             }
         }
@@ -182,7 +185,6 @@ public class TerrainGenerator {
 
 
         }
-
 
         return map;
     }

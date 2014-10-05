@@ -11,6 +11,8 @@ import flash.geom.Rectangle;
 import net.flashpunk.FP;
 import net.flashpunk.Graphic;
 
+import org.spindle.constants.Assets;
+
 /**
  * A  multi-purpose drawing canvas, can be sized beyond the normal Flash BitmapData limits.
  */
