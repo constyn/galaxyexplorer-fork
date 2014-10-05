@@ -45,10 +45,16 @@ public class TerrainGenerator {
                         tiles.setTile(i, j, 64, tileHeight);
                     }
                 } else if (map[j][i] === 100) {
-                    //ctx.fillStyle = "rgb(125,125,125)";
-                    tiles.setTile(i, j, 34)
-                } else if (map[j][i] === 101) {
-                    tiles.setTile(i, j, 35);
+                    str = getSurroundings(map, j, i, 100);
+                    if (Tileculator.matches(str, 'x0xxxx0x')) {
+                        tile = 71;
+                    } else if (Tileculator.matches(str, 'x0xxxx1x') || Tileculator.matches(str, 'x1xxxx1x') ) {
+                        tile = 50;
+                    } else {
+                        tile = 70;
+                    }
+
+                    tiles.setTile(i, j, tile)
                 } else {
                     //tileHeight =  0.6+(map[j][i] / 40);
                     tile = Tileculator.getTile(str)
@@ -119,11 +125,11 @@ public class TerrainGenerator {
 
             for (var j:uint = 1; j < worldHeight - 1; j++) {
                 for (var i:uint = 1; i < worldWidth - 1; i++) {
-                    avg = (
+                    avg = Math.round((
                             map[j - 1][i - 1] + map[j - 1][i] + map[j - 1][i + 1] +
                             map[j][i - 1] + map[j][i + 1] +
                             map[j + 1][i - 1] + map[j - 1][i] + map[j + 1][i + 1]
-                            ) / 8;
+                            ) / 8);
 
                     if (lastpass && map[j][i] > avg) {
                         filterQueue.push([j, i, avg]);
@@ -145,77 +151,42 @@ public class TerrainGenerator {
         filter(true);
 
 
-        return map;
-    }
+        /***************************************/
+        /*             Structures              */
+        /***************************************/
 
-    /**
-     private function generateStructures() {
+        function addWall(px:uint, py:uint) {
+            if (px < worldWidth - 1 && py < worldHeight - 1 && map[py][px] > 10 && map[py][px] < 40 && FP.random < 0.6) {
+                map[py][px] = 100;
+            }
+        }
 
-         var structuresArr = [];
-         for (var w = 0; w < numStructures; w++) {
-            var ry = Math.round(((worldHeight / 2 - isleWidth / 2) + Math.round(FP.random * isleWidth)));
-            var rx = Math.round((( worldWidth / 2 - isleWidth / 2) + Math.round(FP.random * isleWidth)));
-            var sw = 4 + Math.round(FP.random * 10);
-            var sh = 4 + Math.round(FP.random * 10);
+        var numStructures:uint = 3;
 
-            function addWall(ly, lx, num, chances) {
-                if (!chances) chances = 0.2;
-                for (var i = 0; i < structuresArr.length; i++) {
-                    if (lx < structuresArr[i].sx || lx > structuresArr[i].ex || ly < structuresArr[i].sy || ly > structuresArr[i].ey) {
+        for (var i:uint = 0; i < numStructures; i++) {
 
-                    } else {
-                        return;
-                    }
-                }
+            var sx:uint = FP.rand(worldWidth / 2);
+            var sy:uint = FP.rand(worldHeight / 2);
+            var sw:uint = isleSize / 4 + FP.rand(isleSize / 2);
+            var sh:uint = isleSize / 4 + FP.rand(isleSize / 2);
 
-                if (map[lx][ly] > 9 && FP.random > chances) {
-                    map[ly][lx] = num;
-                }
+            for (var si:uint = sx; si < sx + sw; si++) {
+                addWall(si, sy);
+                addWall(si, sy+sh);
             }
 
-
-            if (ry + sh > worldHeight - 1) {
-                sh = worldHeight - ry - 1;
+            for (var sj:uint = sy; sj < sy + sh; sj++) {
+                addWall(sx, sj);
+                addWall(sx+sw, sj);
             }
-
-            if (rx + sw > worldWidth - 1) {
-                sw = worldWidth - rx - 1;
-            }
-
-
-            for (var j = ry; j <= ry + sh; j++) {
-                addWall(j, rx, 100);
-                addWall(j, rx + sw, 100);
-                //map[j][rx] = map[j][rx]>9 ? 100 : map[j][rx];
-                //map[j][rx+sw] = map[j][rx+sw]>9 ? 100 : map[j][rx+sw];
-            }
-
-
-            for (var i = rx; i <= rx + sw; i++) {
-                addWall(ry, i, 100);
-                addWall(ry + sh, i, 100);
-                //map[ry][i] = map[ry][i] > 9 ?  100 : map[ry][i];
-                //map[ry+sh][i] = map[ry+sh][i] > 9 ? 100 : map[ry+sh][i];
-            }
-
-            for (var j = ry + 1; j <= ry + sh - 1; j++) {
-                for (var i = rx + 1; i <= rx + sw - 1; i++) {
-                    addWall(j, i, 101, 0.06);
-                }
-            }
-
-
-            structuresArr.push({
-                sx: rx,
-                sy: ry,
-                ex: rx + sw,
-                ey: ry + sh
-            })
 
 
         }
 
+
+        return map;
     }
-     */
+
+
 }
 }
