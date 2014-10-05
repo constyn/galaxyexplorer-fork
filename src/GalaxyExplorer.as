@@ -11,9 +11,11 @@ import org.spindle.terrain.TerrainGenerator;
 [SWF(width='1024', height='768', backgroundColor='#000000', frameRate='30')]
 public class GalaxyExplorer extends Engine {
 
-    private var size:Number = 50;
-    private var compactness:Number = 2;
+    private var size:Number = 20;
+    private var compactness:Number = 1;
     private var terrainGenerator:TerrainGenerator = new TerrainGenerator();
+    private var levelWidth:Number = 40;
+    private var levelHeight:Number = 25;
 
 
     public function GalaxyExplorer() {
@@ -24,7 +26,7 @@ public class GalaxyExplorer extends Engine {
 
     override public function init():void {
         FP.screen.color = 0x000000;
-        createLevel(60, 60, size);
+        createLevel(levelWidth, levelHeight, size);
         FP.console.log("World size: " + size);
     }
 
@@ -50,7 +52,7 @@ public class GalaxyExplorer extends Engine {
 
         if (shouldRefresh) {
             FP.console.log("World size: " + size);
-            createLevel(60, 60, size);
+            createLevel(levelWidth, levelHeight, size);
 
         }
     }

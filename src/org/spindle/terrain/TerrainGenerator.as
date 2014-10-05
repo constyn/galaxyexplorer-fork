@@ -31,8 +31,8 @@ public class TerrainGenerator {
         var tileHeight:Number
 
 
-        for (var j:uint = 1; j < worldWidth - 1; j++) {
-            for (var i:uint = 1; i < worldHeight - 1; i++) {
+        for (var j:uint = 1; j < worldHeight - 1; j++) {
+            for (var i:uint = 1; i <  worldWidth - 1; i++) {
                 tileHeight = (map[j][i] / 10);
                 str = getSurroundings(map, j, i);
                 if (map[j][i] < 10) {
@@ -50,7 +50,7 @@ public class TerrainGenerator {
                 } else if (map[j][i] === 101) {
                     tiles.setTile(i, j, 35);
                 } else {
-                    tileHeight = (map[j][i] / 10);
+                    tileHeight =  0.6+(map[j][i] / 40);
                     tile = Tileculator.getTile(str)
                     if (tile) {
                         tiles.setTile(i, j, tile, tileHeight);
@@ -59,8 +59,24 @@ public class TerrainGenerator {
             }
         }
         tiles.setTile(1, 1, 0);
+        for (var i:uint = 0; i<tiles.width; i++) {
+            for (var j:uint =0; j<tiles.height; j++) {
+                tiles.setPixel(i,j, randomNoiseValue(tiles.getPixel(i,j)));
+            }
+        }
         tileEntity.addGraphic(tiles);
         return tileEntity;
+    }
+
+    public function randomNoiseValue(value:uint):int {
+        var darken:uint = Math.round(245 + 10*Math.random());
+        var red:uint = value >> 24 & darken;
+        var green:uint = value >> 16 & darken;
+        var blue:uint = value >> 8 & darken;
+        var alpha:uint = value & 0xFF;
+        var result:uint = red<<24 | green<< 16 | blue<< 8 | alpha;
+
+        return result;
     }
 
     private function doGenerate(worldWidth:uint, worldHeight:uint, isleSize:uint, compactness:uint):Array {
@@ -79,8 +95,8 @@ public class TerrainGenerator {
 
         var genPass:Number = isleWidth * compactness;
         while (genPass > 0) {
-            var mx:Number = 5 + Math.round(FP.random * (worldWidth - 10));
-            var my:Number = 5 + Math.round(FP.random * (worldHeight - 10));
+            var mx:Number = 1 + Math.round(FP.random * (worldWidth - 10));
+            var my:Number = 1 + Math.round(FP.random * (worldHeight - 10));
 
 
             if ((FP.random < 0.2 && mx < isleWidth && my < isleWidth) ||

@@ -3,9 +3,9 @@
  */
 package {
 public class Assets {
-    [Embed(source='../resources/images/sprites.png')]
+    [Embed(source='../resources/images/tiles16.png')]
     public static const SPRITES:Class;
 
-    public static const TILE_SIZE:uint = 8;
+    public static const TILE_SIZE:uint = 16;
 }
 }
