@@ -28,7 +28,9 @@ package org.spindle.terrain
 				}
 				
 				if (correct)
+				{
 					foundPattern = pattern;
+				}				
 			}
 			return LandMappings[foundPattern]	
 		}
@@ -36,14 +38,29 @@ package org.spindle.terrain
 		internal static const LandMappings:Object = {
 			//Mijloc
 			
-			//top middle
+			
+			
+			//top middle				
 			'x1x11x0x': 62,
 			
 			//left middle
 			'x1x01x1x': 41,
 			
+			//right middle
+			'x1x10x1x': 43,
+			
+			//bottom middle
+			'x0x11x1x': 22,
+			
+			
+			'011xx110': 31,
+			'110xx011': 51,
+			
 			//middle
 			'00000000': 26,	
+			
+			//middle
+			'11111111': 42,	
 				
 			//pen down
 			'x1x00x0x': 67,
@@ -54,14 +71,6 @@ package org.spindle.terrain
 			//pen right
 			'x0x10x0x': 48,
 			
-			//middle
-			'11111111': 42,	
-			
-			//right middle
-			'x1x10x1x': 43,
-			
-			//bottom middle
-			'x0x11x1x': 22,
 			
 			//top left corner
 			'x0x01x1x': 21,			
@@ -85,13 +94,11 @@ package org.spindle.terrain
 			//vert bridge
 			'x1x00x1x': 28,
 				
-			'01011xxx': 44,
-			'xxx11010': 25,
-			'01x1x01x': 25,
-			'x10x1x10': 24,
-			
-			'01111110': 25,
-			'11011011': 25
+			'01011xxx': 29,
+			'xxx11010': 49,
+			'01x1x01x': 50,
+			'x10x1x10': 30
+							
 		}
 	}
 
