@@ -6,8 +6,6 @@ import net.flashpunk.Entity;
 import net.flashpunk.FP;
 import net.flashpunk.graphics.Tilemap;
 
-import org.spindle.constants.Assets;
-
 public class TerrainGenerator {
 
     private static function getSurroundings(map:Array, j:uint, i:uint, limit:uint = 10):String {
@@ -33,63 +31,36 @@ public class TerrainGenerator {
         var tileHeight:Number
 
 
-        for (var j:uint = 1; j < worldHeight - 1; j++) {
-            for (var i:uint = 1; i < worldWidth - 1; i++) {
+        for (var j:uint = 1; j < worldWidth - 1; j++) {
+            for (var i:uint = 1; i < worldHeight - 1; i++) {
                 tileHeight = (map[j][i] / 10);
                 str = getSurroundings(map, j, i);
                 if (map[j][i] < 10) {
                     str = getSurroundings(map, j, i).substr(0, 3);
                     tile = Mappings.WaterMappings[str];
-                    //tile = Tileculator.getTile(str)
+					//tile = Tileculator.getTile(str)
                     if (tile) {
-                        tiles.setTile(i, j, tile);
+                        tiles.setTile(i, j, tile, tileHeight);
                     } else {
-                        tiles.setTile(i, j, 64);
+                        tiles.setTile(i, j, 64, tileHeight);
                     }
                 } else if (map[j][i] === 100) {
-                    str = getSurroundings(map, j, i, 100);
-                    if (Tileculator.matches(str, 'x0xxxx0x')) {
-                        tile = 71;
-                    } else if (Tileculator.matches(str, 'x0xxxx1x') || Tileculator.matches(str, 'x1xxxx1x') ) {
-                        tile = 50;
-                    } else {
-                        tile = 70;
-                    }
-
-                    tiles.setTile(i, j, tile)
+                    //ctx.fillStyle = "rgb(125,125,125)";
+                    tiles.setTile(i, j, 34)
+                } else if (map[j][i] === 101) {
+                    tiles.setTile(i, j, 35);
                 } else {
-                    //tileHeight =  0.6+(map[j][i] / 40);
+                    tileHeight = (map[j][i] / 10);
                     tile = Tileculator.getTile(str)
                     if (tile) {
-                        tiles.setTile(i, j, tile);
+                        tiles.setTile(i, j, tile, tileHeight);
                     } else trace('Unknown ' + str);
                 }
             }
         }
         tiles.setTile(1, 1, 0);
-        var fx:uint;
-        var fy:uint;
-        for (var i:uint = 1; i < tiles.width - 1; i++) {
-            for (var j:uint = 1; j < tiles.height - 1; j++) {
-                fx = Math.random() < 0.3 ? (i - 1 + Math.round(Math.random() * 2)) : i;
-                fy = Math.random() < 0.3 ? (j - 1 + Math.round(Math.random() * 2)) : j;
-                tiles.setPixel(i, j, randomNoiseValue(tiles.getPixel(fx, fy)));
-            }
-        }
         tileEntity.addGraphic(tiles);
-        tileEntity.layer = 5;
         return tileEntity;
-    }
-
-    public function randomNoiseValue(value:uint):int {
-        var darken:uint = Math.round(240 + 15 * Math.random());
-        var red:uint = value >> 24 & darken;
-        var green:uint = value >> 16 & darken;
-        var blue:uint = value >> 8 & darken;
-        var alpha:uint = value & 0xFF;
-        var result:uint = red << 24 | green << 16 | blue << 8 | alpha;
-
-        return result;
     }
 
     private function doGenerate(worldWidth:uint, worldHeight:uint, isleSize:uint, compactness:uint):Array {
@@ -108,8 +79,8 @@ public class TerrainGenerator {
 
         var genPass:Number = isleWidth * compactness;
         while (genPass > 0) {
-            var mx:Number = 1 + Math.round(FP.random * (worldWidth - 10));
-            var my:Number = 1 + Math.round(FP.random * (worldHeight - 10));
+            var mx:Number = 5 + Math.round(FP.random * (worldWidth - 10));
+            var my:Number = 5 + Math.round(FP.random * (worldHeight - 10));
 
 
             if ((FP.random < 0.2 && mx < isleWidth && my < isleWidth) ||
@@ -128,11 +99,11 @@ public class TerrainGenerator {
 
             for (var j:uint = 1; j < worldHeight - 1; j++) {
                 for (var i:uint = 1; i < worldWidth - 1; i++) {
-                    avg = Math.round((
+                    avg = (
                             map[j - 1][i - 1] + map[j - 1][i] + map[j - 1][i + 1] +
                             map[j][i - 1] + map[j][i + 1] +
                             map[j + 1][i - 1] + map[j - 1][i] + map[j + 1][i + 1]
-                            ) / 8);
+                            ) / 8;
 
                     if (lastpass && map[j][i] > avg) {
                         filterQueue.push([j, i, avg]);
@@ -154,41 +125,77 @@ public class TerrainGenerator {
         filter(true);
 
 
-        /***************************************/
-        /*             Structures              */
-        /***************************************/
-
-        function addWall(px:uint, py:uint) {
-            if (px < worldWidth - 1 && py < worldHeight - 1 && map[py][px] > 10 && map[py][px] < 40 && FP.random < 0.7) {
-                map[py][px] = 100;
-            }
-        }
-
-        var numStructures:uint = 3;
-
-        for (var i:uint = 0; i < numStructures; i++) {
-
-            var sx:uint = FP.rand(worldWidth / 2);
-            var sy:uint = FP.rand(worldHeight / 2);
-            var sw:uint = isleSize / 4 + FP.rand(isleSize / 2);
-            var sh:uint = isleSize / 4 + FP.rand(isleSize / 2);
-
-            for (var si:uint = sx; si < sx + sw; si++) {
-                addWall(si, sy);
-                addWall(si, sy+sh);
-            }
-
-            for (var sj:uint = sy; sj < sy + sh; sj++) {
-                addWall(sx, sj);
-                addWall(sx+sw, sj);
-            }
-
-
-        }
-
         return map;
     }
 
+    /**
+     private function generateStructures() {
 
+         var structuresArr = [];
+         for (var w = 0; w < numStructures; w++) {
+            var ry = Math.round(((worldHeight / 2 - isleWidth / 2) + Math.round(FP.random * isleWidth)));
+            var rx = Math.round((( worldWidth / 2 - isleWidth / 2) + Math.round(FP.random * isleWidth)));
+            var sw = 4 + Math.round(FP.random * 10);
+            var sh = 4 + Math.round(FP.random * 10);
+
+            function addWall(ly, lx, num, chances) {
+                if (!chances) chances = 0.2;
+                for (var i = 0; i < structuresArr.length; i++) {
+                    if (lx < structuresArr[i].sx || lx > structuresArr[i].ex || ly < structuresArr[i].sy || ly > structuresArr[i].ey) {
+
+                    } else {
+                        return;
+                    }
+                }
+
+                if (map[lx][ly] > 9 && FP.random > chances) {
+                    map[ly][lx] = num;
+                }
+            }
+
+
+            if (ry + sh > worldHeight - 1) {
+                sh = worldHeight - ry - 1;
+            }
+
+            if (rx + sw > worldWidth - 1) {
+                sw = worldWidth - rx - 1;
+            }
+
+
+            for (var j = ry; j <= ry + sh; j++) {
+                addWall(j, rx, 100);
+                addWall(j, rx + sw, 100);
+                //map[j][rx] = map[j][rx]>9 ? 100 : map[j][rx];
+                //map[j][rx+sw] = map[j][rx+sw]>9 ? 100 : map[j][rx+sw];
+            }
+
+
+            for (var i = rx; i <= rx + sw; i++) {
+                addWall(ry, i, 100);
+                addWall(ry + sh, i, 100);
+                //map[ry][i] = map[ry][i] > 9 ?  100 : map[ry][i];
+                //map[ry+sh][i] = map[ry+sh][i] > 9 ? 100 : map[ry+sh][i];
+            }
+
+            for (var j = ry + 1; j <= ry + sh - 1; j++) {
+                for (var i = rx + 1; i <= rx + sw - 1; i++) {
+                    addWall(j, i, 101, 0.06);
+                }
+            }
+
+
+            structuresArr.push({
+                sx: rx,
+                sy: ry,
+                ex: rx + sw,
+                ey: ry + sh
+            })
+
+
+        }
+
+    }
+     */
 }
 }
