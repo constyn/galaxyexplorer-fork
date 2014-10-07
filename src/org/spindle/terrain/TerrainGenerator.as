@@ -62,9 +62,54 @@ public class TerrainGenerator {
         tileEntity.addGraphic(tiles);
         return tileEntity;
     }
+	
+	public function createFOW(worldWidth:uint, worldHeight:uint, initX:uint, initY:uint):Entity {
+		var tileEntity:Entity = new Entity();
+        var tiles:Tilemap = new Tilemap(Assets.SPRITES, worldWidth * Assets.TILE_SIZE, worldHeight * Assets.TILE_SIZE, Assets.TILE_SIZE, Assets.TILE_SIZE);
+        var str:String;	
+        var map:Array = makeShadowMap(worldWidth, worldHeight, initX, initY);
+        var tile:Number;
+        var tileHeight:Number
 
-    private function doGenerate(worldWidth:uint, worldHeight:uint, isleSize:uint, compactness:uint):Array {
 
+        for (var j:uint = 1; j < worldWidth - 1; j++) {
+            for (var i:uint = 1; i < worldHeight - 1; i++) {
+                tileHeight = (map[j][i] / 10);
+                str = getSurroundings(map, j, i);
+                if (map[j][i] > 3) {
+                    str = getSurroundings(map, j, i).substr(0, 3);
+                    tile = 65
+					//tile = Tileculator.getTile(str)
+                    if (tile) {
+                        tiles.setTile(i, j, tile, tileHeight);
+                    } else {
+                        tiles.setTile(i, j, 64, tileHeight);
+                    }             
+				} 
+            }
+        }
+        tiles.setTile(1, 1, 0);
+        tileEntity.addGraphic(tiles);
+        return tileEntity;
+	}
+	
+	private function makeShadowMap(worldWidth:uint, worldHeight:uint, initX:uint, initY:uint):Array 
+	{
+		var map:Array = [];
+        var row:Array;
+        for (var j:uint = 0; j < worldHeight; j++) {
+            row = [];
+            for (var i:uint = 0; i < worldWidth; i++) {
+                row.push(int(FP.distance(initX,initY,i,j)));
+            }
+            map.push(row);
+        }
+		
+		return map;
+	}
+
+    private function doGenerate(worldWidth:uint, worldHeight:uint, isleSize:uint, compactness:uint):Array 
+	{
         var isleWidth:Number = isleSize;
         var map:Array = [];
         var passes:Number = 50;
@@ -90,7 +135,6 @@ public class TerrainGenerator {
             }
 
         }
-
 
         function filter(lastpass:Boolean = false):void {
             var filterQueue:Array = [];

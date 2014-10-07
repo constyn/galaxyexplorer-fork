@@ -31,6 +31,7 @@ public class GalaxyExplorer extends Engine {
     private function createLevel(worldWidth:uint, worldHeight:uint, isleSize:uint):void {
         var world:World = new World();
         world.add(terrainGenerator.createLevel(worldWidth, worldHeight, isleSize, compactness));
+		world.add(terrainGenerator.createFOW(worldWidth, worldHeight, 15, 15));
         FP.world = world;
     }
 
