@@ -7,6 +7,7 @@ import flash.geom.ColorTransform;
 import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
+import org.spindle.constants.Assets;
 
 import net.flashpunk.FP;
 import net.flashpunk.Graphic;

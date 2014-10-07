@@ -35,11 +35,65 @@ package org.spindle.terrain
 			return LandMappings[foundPattern]	
 		}
 		
+		public static function getShadowTile(str:String):int
+		{
+			var foundPattern:String = "";
+			
+			for (var pattern:String in ShadowMappings)
+			{
+				var correct:Boolean = true;
+				var i:int = 0;
+				while (correct && i < 8)
+				{
+					if (pattern.charAt(i) != str.charAt(i) && pattern.charAt(i) != 'x')
+						correct = false;
+					
+					i++;
+				}
+				
+				if (correct)
+				{
+					foundPattern = pattern;
+				}				
+			}
+			return ShadowMappings[foundPattern]	
+		}
+		
+		internal static const ShadowMappings:Object = {
+			
+			//middle
+			'11111111': 122,	
+						
+			//top middle				
+			'x1x11x0x': 142,
+			
+			//left middle
+			'x1x01x1x': 121,
+			
+			//right middle
+			'x1x10x1x': 123,
+			
+			//bottom middle
+			'x0x11x1x': 102,
+			
+			//top left corner
+			'x0x01x1x': 101,			
+			'01111111': 125,
+			
+			//top right corner
+			'x0x10x1x': 103,			
+			'11011111': 124,
+			
+			//bottom left corner
+			'x1x01x0x': 141,			
+			'11111011': 105,
+			
+			//bottom right corner
+			'x1x10x0x': 143,			
+			'11111110': 104
+		}
+		
 		internal static const LandMappings:Object = {
-			//Mijloc
-			
-			
-			
 			//top middle				
 			'x1x11x0x': 62,
 			

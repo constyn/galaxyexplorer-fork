@@ -5,6 +5,8 @@ package org.spindle.terrain {
 import net.flashpunk.Entity;
 import net.flashpunk.FP;
 import net.flashpunk.graphics.Tilemap;
+import org.spindle.constants.Assets;
+import org.spindle.model.Model;
 
 public class TerrainGenerator {
 
@@ -63,29 +65,30 @@ public class TerrainGenerator {
         return tileEntity;
     }
 	
-	public function createFOW(worldWidth:uint, worldHeight:uint, initX:uint, initY:uint):Entity {
+	public function createFOW(worldWidth:uint, worldHeight:uint, initX:uint, initY:uint, model:Model ):Entity {
 		var tileEntity:Entity = new Entity();
         var tiles:Tilemap = new Tilemap(Assets.SPRITES, worldWidth * Assets.TILE_SIZE, worldHeight * Assets.TILE_SIZE, Assets.TILE_SIZE, Assets.TILE_SIZE);
         var str:String;	
-        var map:Array = makeShadowMap(worldWidth, worldHeight, initX, initY);
+        var map:Array = makeShadowMap(worldWidth, worldHeight, initX, initY, model);
         var tile:Number;
         var tileHeight:Number
-
-
+		
         for (var j:uint = 1; j < worldWidth - 1; j++) {
             for (var i:uint = 1; i < worldHeight - 1; i++) {
                 tileHeight = (map[j][i] / 10);
-                str = getSurroundings(map, j, i);
+                str = getSurroundings(map, j, i, 4);
                 if (map[j][i] > 3) {
-                    str = getSurroundings(map, j, i).substr(0, 3);
-                    tile = 65
-					//tile = Tileculator.getTile(str)
+					tile = Tileculator.getShadowTile(str)
                     if (tile) {
-                        tiles.setTile(i, j, tile, tileHeight);
+                        tiles.setTile(i, j, tile, 1);
                     } else {
-                        tiles.setTile(i, j, 64, tileHeight);
+                        tiles.setTile(i, j, 1000, tileHeight);
                     }             
 				} 
+				else
+				{
+					model.exploredMap[j][i] = 1;
+				}
             }
         }
         tiles.setTile(1, 1, 0);
@@ -93,14 +96,17 @@ public class TerrainGenerator {
         return tileEntity;
 	}
 	
-	private function makeShadowMap(worldWidth:uint, worldHeight:uint, initX:uint, initY:uint):Array 
+	private function makeShadowMap(worldWidth:uint, worldHeight:uint, initX:uint, initY:uint, model:Model):Array 
 	{
 		var map:Array = [];
         var row:Array;
         for (var j:uint = 0; j < worldHeight; j++) {
             row = [];
-            for (var i:uint = 0; i < worldWidth; i++) {
-                row.push(int(FP.distance(initX,initY,i,j)));
+            for (var i:uint = 0; i < worldWidth; i++) {				
+				if(!model.exploredMap[j][i])
+					row.push(int(FP.distance(initX, initY, i, j)));
+				else
+					row.push(1);
             }
             map.push(row);
         }
@@ -171,75 +177,5 @@ public class TerrainGenerator {
 
         return map;
     }
-
-    /**
-     private function generateStructures() {
-
-         var structuresArr = [];
-         for (var w = 0; w < numStructures; w++) {
-            var ry = Math.round(((worldHeight / 2 - isleWidth / 2) + Math.round(FP.random * isleWidth)));
-            var rx = Math.round((( worldWidth / 2 - isleWidth / 2) + Math.round(FP.random * isleWidth)));
-            var sw = 4 + Math.round(FP.random * 10);
-            var sh = 4 + Math.round(FP.random * 10);
-
-            function addWall(ly, lx, num, chances) {
-                if (!chances) chances = 0.2;
-                for (var i = 0; i < structuresArr.length; i++) {
-                    if (lx < structuresArr[i].sx || lx > structuresArr[i].ex || ly < structuresArr[i].sy || ly > structuresArr[i].ey) {
-
-                    } else {
-                        return;
-                    }
-                }
-
-                if (map[lx][ly] > 9 && FP.random > chances) {
-                    map[ly][lx] = num;
-                }
-            }
-
-
-            if (ry + sh > worldHeight - 1) {
-                sh = worldHeight - ry - 1;
-            }
-
-            if (rx + sw > worldWidth - 1) {
-                sw = worldWidth - rx - 1;
-            }
-
-
-            for (var j = ry; j <= ry + sh; j++) {
-                addWall(j, rx, 100);
-                addWall(j, rx + sw, 100);
-                //map[j][rx] = map[j][rx]>9 ? 100 : map[j][rx];
-                //map[j][rx+sw] = map[j][rx+sw]>9 ? 100 : map[j][rx+sw];
-            }
-
-
-            for (var i = rx; i <= rx + sw; i++) {
-                addWall(ry, i, 100);
-                addWall(ry + sh, i, 100);
-                //map[ry][i] = map[ry][i] > 9 ?  100 : map[ry][i];
-                //map[ry+sh][i] = map[ry+sh][i] > 9 ? 100 : map[ry+sh][i];
-            }
-
-            for (var j = ry + 1; j <= ry + sh - 1; j++) {
-                for (var i = rx + 1; i <= rx + sw - 1; i++) {
-                    addWall(j, i, 101, 0.06);
-                }
-            }
-
-
-            structuresArr.push({
-                sx: rx,
-                sy: ry,
-                ex: rx + sw,
-                ey: ry + sh
-            })
-
-
-        }
-
-    }
-     */
 }
 }
