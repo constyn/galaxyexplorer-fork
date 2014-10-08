@@ -22,13 +22,13 @@ public class TerrainGenerator {
                 + (map[j + 1][i + 1] < limit ? 0 : 1);
     }
 
-    public function createLevel(worldWidth:uint, worldHeight:uint, isleSize:uint, compactness:uint):Entity {
+    public function createLevel(worldWidth:uint, worldHeight:uint, isleSize:uint, compactness:uint, model:Model):Entity {
 
 
         var tileEntity:Entity = new Entity();
         var tiles:Tilemap = new Tilemap(Assets.SPRITES, worldWidth * Assets.TILE_SIZE, worldHeight * Assets.TILE_SIZE, Assets.TILE_SIZE, Assets.TILE_SIZE);
         var str:String;
-        var map:Array = doGenerate(worldWidth, worldHeight, isleSize, compactness);
+        var map:Array = doGenerate(worldWidth, worldHeight, isleSize, compactness);		
         var tile:Number;
         var tileHeight:Number
 
@@ -58,6 +58,7 @@ public class TerrainGenerator {
                         tiles.setTile(i, j, tile, tileHeight);
                     } else trace('Unknown ' + str);
                 }
+				model.map[j][i] = tile;
             }
         }
         tiles.setTile(1, 1, 0);

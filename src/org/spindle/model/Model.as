@@ -1,6 +1,8 @@
 package org.spindle.model 
 {
+	import net.flashpunk.Entity;
 	import org.spindle.constants.Assets;
+	import org.spindle.logic.Character;
 	/**
 	 * ...
 	 * @author 
@@ -8,25 +10,38 @@ package org.spindle.model
 	public class Model 
 	{
 		
+		public var exploredMap:Array;
+		public var texts:Array;
+		public var items:Array;
+		public var character:Character;
+		public var fow:Entity;
+		public var map:Array;
+		
 		public function Model() 
 		{
 			init()
 		}
 		
 		private function init():void {
-			var row:Array;
-			exploredMap = [];
-			for (var j:uint = 0; j < Assets.WORLD_HEIGHT; j++) {
-				row = [];
-				for (var i:uint = 0; i < Assets.WORLD_WIDTH; i++) {
-					row.push(0)
-				}
-				exploredMap.push(row);
-			}
+			exploredMap = initMap(Assets.WORLD_HEIGHT, Assets.WORLD_WIDTH)
+			map = initMap(Assets.WORLD_HEIGHT, Assets.WORLD_WIDTH)		
+			texts = [];
+			items = [];
 		}
 		
-		public var exploredMap:Array;
-		
+		public function initMap(h:uint,w:uint):Array
+		{
+			var row:Array;
+			var m:Array = [];
+			for (var j:uint = 0; j < h; j++) {
+				row = [];
+				for (var i:uint = 0; i < w; i++) {
+					row.push(0)
+				}
+				m.push(row);
+			}
+			
+			return m;
+		}		
 	}
-
 }

@@ -4,10 +4,10 @@ package org.spindle.logic
 	 * ...
 	 * @author 
 	 */
-	public class GameEngine 
+	public class Item 
 	{
 		
-		public function GameEngine() 
+		public function Item() 
 		{
 			
 		}
