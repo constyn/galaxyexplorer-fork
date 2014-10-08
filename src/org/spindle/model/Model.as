@@ -15,11 +15,14 @@ package org.spindle.model
 		public var items:Array;
 		public var character:Character;
 		public var fow:Entity;
+		public var gameObjs:Entity;
 		public var map:Array;
+		
 		
 		public function Model() 
 		{
 			init()
+			
 		}
 		
 		private function init():void {

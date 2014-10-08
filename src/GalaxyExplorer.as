@@ -60,7 +60,10 @@ import org.spindle.terrain.TerrainGenerator;
 			
 			private function createGameObjects():void
 			{
-				world.add(gameGenerator.createLevel(Assets.WORLD_WIDTH, Assets.WORLD_HEIGHT, model));			
+				if (model.gameObjs)
+					world.remove(model.gameObjs);	
+				
+				model.gameObjs = world.add(gameGenerator.createLevel(Assets.WORLD_WIDTH, Assets.WORLD_HEIGHT, model));			
 			}
 			
 			private function updateFog():void
@@ -82,6 +85,12 @@ import org.spindle.terrain.TerrainGenerator;
 				} else if (Input.check(Key.NUMPAD_SUBTRACT)) {
 					size--;
 					shouldRefresh = true;
+				}
+				else if (Input.check(Key.DOWN) || Input.check(Key.UP) || Input.check(Key.LEFT)|| Input.check(Key.RIGHT)) {
+					model.character.yPos += (Input.check(Key.DOWN)?1:0) + (Input.check(Key.UP)? -1:0);
+					model.character.xPos += (Input.check(Key.RIGHT)?1:0) + (Input.check(Key.LEFT)?-1:0);
+					createGameObjects();
+					updateFog();
 				}
 				else if (Input.mousePressed) {
 				   

@@ -26,7 +26,6 @@ package org.spindle.logic
 			
 			for (var j:uint = 1; j < worldWidth - 1; j++) {
 				for (var i:uint = 1; i < worldHeight - 1; i++) {
-					trace(model.character.xPos, model.character.yPos)
 					if (model.character.xPos == i && model.character.yPos == j)
 						tiles.setTile(i, j, 106, 1);
 				}
