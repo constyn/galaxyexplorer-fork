@@ -9,10 +9,13 @@ package org.spindle.logic
 	{
 		public var xPos:uint;
 		public var yPos:uint;
-		
+		public var daysOnIsland:uint;
+		public var energy:uint;
+		public var items:Array;
+				
 		public function Character() 
 		{
-			
+			daysOnIsland = 0;
 		}
 		
 		public function reset(map:Array):void

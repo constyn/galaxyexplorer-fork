@@ -31,7 +31,7 @@ package org.spindle.logic
 			model.character = getRandomChar();
 			model.texts.push(getRandomText());
 			
-			FP.alarm(1, showText)
+			FP.alarm(3, showText)
 			
 		}
 		

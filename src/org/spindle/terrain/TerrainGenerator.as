@@ -26,6 +26,7 @@ public class TerrainGenerator {
 
 
         var tileEntity:Entity = new Entity();
+		tileEntity.layer = 3
         var tiles:Tilemap = new Tilemap(Assets.SPRITES, worldWidth * Assets.TILE_SIZE, worldHeight * Assets.TILE_SIZE, Assets.TILE_SIZE, Assets.TILE_SIZE);
         var str:String;
         var map:Array = doGenerate(worldWidth, worldHeight, isleSize, compactness);		
@@ -62,12 +63,35 @@ public class TerrainGenerator {
             }
         }
         tiles.setTile(1, 1, 0);
+		
+		for (var i:uint = 1; i < tiles.width - 1; i++) {
+            for (var j:uint = 1; j < tiles.height - 1; j++) {
+                var fx = Math.random() < 0.3 ? (i - 1 + Math.round(Math.random() * 2)) : i;
+                var fy = Math.random() < 0.3 ? (j - 1 + Math.round(Math.random() * 2)) : j;
+                tiles.setPixel(i, j, randomNoiseValue(tiles.getPixel(fx, fy)));
+            }
+        }
+		
         tileEntity.addGraphic(tiles);
         return tileEntity;
     }
 	
+	private function randomNoiseValue(value:uint):int 
+	{
+        var darken:uint = Math.round(240 + 15 * Math.random());
+        var red:uint = value >> 24 & darken;
+        var green:uint = value >> 16 & darken;
+        var blue:uint = value >> 8 & darken;
+        var alpha:uint = value & 0xFF;
+        var result:uint = red << 24 | green << 16 | blue << 8 | alpha;
+
+        return result;
+    }
+	
 	public function createFOW(worldWidth:uint, worldHeight:uint, initX:uint, initY:uint, model:Model ):Entity {
+		
 		var tileEntity:Entity = new Entity();
+		tileEntity.layer = 2
         var tiles:Tilemap = new Tilemap(Assets.SPRITES, worldWidth * Assets.TILE_SIZE, worldHeight * Assets.TILE_SIZE, Assets.TILE_SIZE, Assets.TILE_SIZE);
         var str:String;	
         var map:Array = makeShadowMap(worldWidth, worldHeight, initX, initY, model);
@@ -77,8 +101,8 @@ public class TerrainGenerator {
         for (var j:uint = 1; j < worldWidth - 1; j++) {
             for (var i:uint = 1; i < worldHeight - 1; i++) {
                 tileHeight = (map[j][i] / 10);
-                str = getSurroundings(map, j, i, 4);
-                if (map[j][i] > 3) {
+                str = getSurroundings(map, j, i, 2);
+                if (map[j][i] > 1) {
 					tile = Tileculator.getShadowTile(str)
                     if (tile) {
                         tiles.setTile(i, j, tile, 1);
@@ -93,6 +117,7 @@ public class TerrainGenerator {
             }
         }
         tiles.setTile(1, 1, 0);
+		
         tileEntity.addGraphic(tiles);
         return tileEntity;
 	}

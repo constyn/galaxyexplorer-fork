@@ -17,6 +17,7 @@ package org.spindle.model
 		public var fow:Entity;
 		public var gameObjs:Entity;
 		public var map:Array;
+		public var alreadyMoved:Boolean;
 		
 		
 		public function Model() 

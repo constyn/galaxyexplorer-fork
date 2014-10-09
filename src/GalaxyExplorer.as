@@ -86,11 +86,16 @@ import org.spindle.terrain.TerrainGenerator;
 					size--;
 					shouldRefresh = true;
 				}
-				else if (Input.check(Key.DOWN) || Input.check(Key.UP) || Input.check(Key.LEFT)|| Input.check(Key.RIGHT)) {
+				else if (!model.alreadyMoved && (Input.check(Key.DOWN) || Input.check(Key.UP) || Input.check(Key.LEFT) || Input.check(Key.RIGHT))) {
 					model.character.yPos += (Input.check(Key.DOWN)?1:0) + (Input.check(Key.UP)? -1:0);
-					model.character.xPos += (Input.check(Key.RIGHT)?1:0) + (Input.check(Key.LEFT)?-1:0);
+					model.character.xPos += (Input.check(Key.RIGHT)?1:0) + (Input.check(Key.LEFT)? -1:0);
+					model.alreadyMoved = true;
+					model.character.daysOnIsland++;
 					createGameObjects();
 					updateFog();
+				}
+				else if (!Input.check(Key.DOWN) && !Input.check(Key.UP) && !Input.check(Key.LEFT) && !Input.check(Key.RIGHT)) {
+					model.alreadyMoved = false;
 				}
 				else if (Input.mousePressed) {
 				   
@@ -102,7 +107,7 @@ import org.spindle.terrain.TerrainGenerator;
 				
 				if (shouldRefresh) {
 					FP.console.log("World size: " + size);
-					createLevel(60, 60, size);
+					init();
 				}
 			}
 			
